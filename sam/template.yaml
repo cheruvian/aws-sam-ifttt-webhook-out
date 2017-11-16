@@ -1,0 +1,43 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Amazon Lambda trigger that calls out of your AWS account and into IFTTT
+Parameters:
+  LambdaFunctionName:
+    Description: The name of the Lambda function.
+    Default: aws-sam-ifttt-webhook-out
+    Type: String
+  WebhooksEventName:
+    Description: The name of the event you chose for your Webhook Applet.
+    Default: aws-sam-ifttt-webhook-out
+    Type: String
+  WebhooksKey:
+    Description: The Webhook Service key. Found here (https://ifttt.com/services/maker_webhooks/settings) at the end of 'https://maker.ifttt.com/use/API_KEY_HERE'
+    Default: aws-sam-ifttt-webhook-out
+    Type: String
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+  WebhookOut:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Description: Amazon Lambda trigger that calls out of your AWS account and into IFTTT
+      Handler: main.lambda_handler
+      CodeUri: ../build/aws-sam-ifttt-webhook-out.zip
+      MemorySize: 192
+      Runtime: python2.7
+      Timeout: 300
+      Environment:
+        Variables:
+          WEBHOOK_EVENT_NAME: !Ref WebhooksEventName
+          WEBHOOK_KEY: !Ref WebhooksKey
+      Events:
+        # Any valid event source can be used but in this case 
+        # lets hit our webhook anytime something is created in an S3 Bucket
+        S3Notifications:
+          Type: S3
+          Properties:
+            Bucket: !Ref S3Bucket
+            Events: s3:ObjectCreated:*
+ 

@@ -1,3 +1,8 @@
+# Artifact outputs
+build
+# Lambda Function lib directory
+webhook/lib
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

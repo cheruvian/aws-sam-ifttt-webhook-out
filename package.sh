@@ -7,11 +7,11 @@ fi
 
 mkdir -p build
 
-pip install -r requirements.txt -t webhook/lib
-
 pushd webhook
-zip -r ../build/aws-sam-ifttt-webhook-out.zip *
-popd
+GOOS=linux GOARCH=amd64 go build -o bin/webhook main.go
+pushd bin
+zip -r - * > ../../build/aws-sam-ifttt-webhook-out.zip
+popd && popd
 
 set -x
 

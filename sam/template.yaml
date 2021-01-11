@@ -23,21 +23,20 @@ Resources:
     Properties:
       FunctionName: !Ref LambdaFunctionName
       Description: Amazon Lambda trigger that calls out of your AWS account and into IFTTT
-      Handler: main.lambda_handler
+      Handler: webhook
       CodeUri: ../build/aws-sam-ifttt-webhook-out.zip
       MemorySize: 192
-      Runtime: python2.7
+      Runtime: go1.x
       Timeout: 300
       Environment:
         Variables:
           WEBHOOK_EVENT_NAME: !Ref WebhooksEventName
           WEBHOOK_KEY: !Ref WebhooksKey
       Events:
-        # Any valid event source can be used but in this case 
+        # Any valid event source can be used but in this case
         # lets hit our webhook anytime something is created in an S3 Bucket
         S3Notifications:
           Type: S3
           Properties:
             Bucket: !Ref S3Bucket
             Events: s3:ObjectCreated:*
- 
